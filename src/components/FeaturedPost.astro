@@ -11,14 +11,12 @@ const featuredPosts = posts.filter((post) =>
 ---
 
 <!-- ============================================ --><!--                Featured Posts                --><!-- ============================================ -->
-<div class="blog-sidebar">
   <!--Featured-->
-  <div class="blog-featured-group">
-    <span class="blog-header">Featured Posts</span>
+    <span class="blog-sidebar_widget-header">Featured Posts</span>
     {
       featuredPosts.map((post) => (
-        <a class="blog-feature" href={`/blog/${post.id}`}>
-          <picture class="blog-featureImage">
+        <a class="blog-sidebar_widget-link" href={`/blog/${post.id}`}>
+          <picture class="blog-sidebar_widget-image">
             <Image
               src={post.data.image}
               alt={post.data.imageAlt}
@@ -28,11 +26,9 @@ const featuredPosts = posts.filter((post) =>
             />
           </picture>
           <div class="content-group">
-            <h3 class="feature-h3">{post.data.title}</h3>
-            <span class="feature-date">{formatDate(post.data.date)}</span>
+            <h3 class="blog-sidebar_widget-h3">{post.data.title}</h3>
+            <span class="blog-sidebar_widget-date">{formatDate(post.data.date)}</span>
           </div>
         </a>
       ))
     }
-  </div>
-</div>

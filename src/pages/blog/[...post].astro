@@ -1,5 +1,5 @@
 ---
-import { getCollection, render  } from "astro:content";
+import { getCollection, render } from "astro:content";
 import { Image } from "astro:assets";
 import BaseLayout from "src/layouts/BaseLayout.astro";
 import { formatDate, getOptimizedImage } from "@js/utils";
@@ -8,81 +8,78 @@ import FeaturedPost from "@components/FeaturedPost.astro";
 import "@styles/blog.less";
 
 // Optimize our landing image and pass it as props to the BaseLayout (for preloading) and Landing (for rendering)
-import landingImage from "@assets/images/landing.jpg" // <-- THE PATH TO THE ASSET YOU WANT TO PRELOAD - The asset must live in src
-const optimizedImage = await getOptimizedImage(landingImage)
+import landingImage from "@assets/images/landing.jpg"; // <-- THE PATH TO THE ASSET YOU WANT TO PRELOAD - The asset must live in src
+import TableOfContents from "@components/TemplateComponents/TableOfContents.astro";
+const optimizedImage = await getOptimizedImage(landingImage);
 
 export async function getStaticPaths() {
-  const posts = await getCollection("blog");
-  return posts.map((entry) => ({
-    params: { post: entry.id },
-    props: { post: entry },
-  }));
+	const posts = await getCollection("blog");
+	return posts.map((entry) => ({
+		params: { post: entry.id },
+		props: { post: entry },
+	}));
 }
 
 const { post } = Astro.props;
 const { title, date, description, image, imageAlt, author } = post.data;
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
 ---
 
-<BaseLayout
-  title={title}
-  description={description}
-  preloadedImage = {optimizedImage}
->
+<BaseLayout title={title} description={description} preloadedImage={optimizedImage}>
 
-  <Landing 
-    title="Blog"
-    image={optimizedImage}
-  />
+	<!-- ============================================ -->
+	<!--              Main Blog Content               -->
+	<!-- ============================================ -->
 
-  <!-- ============================================ -->
-  <!--              Main Blog Content               -->
-  <!-- ============================================ -->
+	<div class="blog-container main-content-wrapper">
+		<!--Main content -->
+		<section class="main-content">
+			<!-- ============================================ -->
+			<!--                  Blog Article                -->
+			<!-- ============================================ -->
 
-  <div class="blog-container main-content-wrapper">
-    <!--Main content -->
-    <div class="main-content">
-      <!-- ============================================ -->
-      <!--                  Blog Article                -->
-      <!-- ============================================ -->
+			<article class="blog-article">
 
-      <article class="blog-article">
-        <!--Main Article Image-->
-        <picture class="blog-mainImage">
-          <Image
-            src={image}
-            alt={imageAlt}
-            width="795"
-            height="400"
-            decoding="async"
-          />
-        </picture>
+				<!--Article Info-->
+				<header class="blog-header">
+					<h1 class="blog-h1">{title}</h1>
+					<div class="blog-authorGroup">
+						<!--Author Image-->
+						<picture class="blog-author-img">
+							<img src="/assets/svgs/profile.svg" alt="house" width="32" height="32" decoding="async" />
+						</picture>
+						<span class="blog-author">{author}</span>
+						<span aria-hidden="true" class="blog-dot"></span>
+						<!--Blog Date-->
+						<span class="blog-date">{formatDate(date)}</span>
+					</div>
+				</header>
 
-        <!--Article Info-->
-        <div class="article-group">
-          <h1 class="blog-h1">{title}</h1>
-          <div class="blog-authorGroup">
-            <!--Author Image-->
-            <picture class="blog-author-img">
-              <img
-                src="/assets/svgs/profile.svg"
-                alt="house"
-                width="32"
-                height="32"
-                decoding="async"
-              />
-            </picture>
-            <span class="blog-author">{author}</span>
-            <span aria-hidden="true" class="blog-dot"></span>
-            <!--Blog Date-->
-            <span class="blog-date">{formatDate(date)}</span>
-          </div>
-        </div>
-        <section id="blog-content">
-          <Content />
-        </section>
-      </article>
-    </div>
-    <FeaturedPost />
-  </div>
+				<!--Main Article Image-->
+				<picture class="blog-mainImage">
+					<Image src={image} alt={imageAlt} width="795" height="400" decoding="async" />
+				</picture>
+
+				<!-- Mobile Table of Contents -->
+				<div class="blog-sidebar_widget-wrapper cs-hide-on-desktop">
+					<TableOfContents headings={headings} levels={3} />
+				</div>
+				<!--Markdown content-->
+				<div id="blog-content">
+					<Content />
+				</div>
+			</article>
+		</section>
+		<!--Side bar-->
+		<aside class="blog-sidebar">
+			<!-- Desktop Table of Contents -->
+			<div class="blog-sidebar_widget-wrapper cs-hide-on-mobile" id="desktop-toc">
+				<TableOfContents headings={headings} levels={3} />
+			</div>
+			<!-- Featured Posts -->
+			<div class="blog-sidebar_widget-wrapper">
+				<FeaturedPost />
+			</div>
+		</aside>
+	</div>
 </BaseLayout>
