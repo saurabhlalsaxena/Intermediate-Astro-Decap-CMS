@@ -1,4 +1,6 @@
 ---
+import "@styles/sidebar.less";
+
 interface Heading {
 	depth: number; // The heading level (h1 = 1, h2 = 2, etc)
 	slug: string; // The ID of the heading for linking
@@ -16,7 +18,7 @@ const { headings, levels = 2 } = Astro.props as Props;
 const filteredHeadings = headings.filter((heading) => heading.depth <= levels);
 ---
 
-	<h3 class=" blog-sidebar_widget-header">On this page</h3>
+	<h3 class="blog-sidebar_widget-header">On this page</h3>
 	<ul class="cs-toc-list">
 		{
 			filteredHeadings.map((heading) => (
@@ -54,7 +56,7 @@ const filteredHeadings = headings.filter((heading) => heading.depth <= levels);
 			padding-left: 1.5rem;
 		}
 		&:has(.cs-toc-current) {
-			border-left: 2px solid var(--primary);
+			border-left: 2px solid var(--primaryLight);
 		}
 	}
 
@@ -63,12 +65,8 @@ const filteredHeadings = headings.filter((heading) => heading.depth <= levels);
 		color: var(--bodyTextColor);
 		text-decoration: none;
 		&:hover {
-			color: var(--primary);
+			color: var(--primaryLight);
 		}
-	}
-
-	.cs-toc-current {
-		color: var(--primary);
 	}
 
     @media only screen and (min-width: 64rem) {
@@ -95,13 +93,13 @@ const filteredHeadings = headings.filter((heading) => heading.depth <= levels);
 	let isDesktop = window.matchMedia("(min-width: 1024px)").matches;
 
 	// Function that runs when the Intersection Observer fires
-	function setCurrent(entries) {
+	function setCurrent(entries: any[]) {
 		const tocWrapper = document.querySelector("#desktop-toc");
 		if (!tocWrapper) return;
 
 		const allSectionLinks = tocWrapper.querySelectorAll(".cs-toc-link");
 
-		entries.forEach((entry) => {
+		entries.forEach((entry: { isIntersecting: any; target: { id: any; }; }) => {
 			if (entry.isIntersecting) {
 				allSectionLinks.forEach((link) => link.classList.remove("cs-toc-current"));
 				const targetLink = tocWrapper.querySelector(`a[href="#${entry.target.id}"].cs-toc-link`);
@@ -112,7 +110,7 @@ const filteredHeadings = headings.filter((heading) => heading.depth <= levels);
 
 	function initTOC() {
 		// Check if it's desktop
-		if (!window.matchMedia("(min-width: 1024px)").matches) return;
+		if (!window.matchMedia("(min-width: 64rem)").matches) return;
 
 		// update this with whatever class wraps your blog post content
 		wrappingElement = document.querySelector("#blog-content");
@@ -139,13 +137,13 @@ const filteredHeadings = headings.filter((heading) => heading.depth <= levels);
 
 	// Re-run on view transitions navigation if on desktop
 	document.addEventListener("astro:after-swap", () => {
-		if (window.matchMedia("(min-width: 1024px)").matches) {
+		if (window.matchMedia("(min-width: 64rem)").matches) {
 			initTOC();
 		}
 	});
 
 	// Listen for screen size changes
-	window.matchMedia("(min-width: 1024px)").addEventListener("change", (e) => {
+	window.matchMedia("(min-width: 64rem)").addEventListener("change", (e) => {
 		if (e.matches) {
 			initTOC();
 		} else {
