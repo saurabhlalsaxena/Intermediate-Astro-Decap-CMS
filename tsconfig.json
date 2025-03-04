@@ -10,6 +10,7 @@
     "baseUrl": ".",
     // creates shortcuts for imports
     "paths": {
+      "@layouts/*":["src/layouts/*"],
       "@assets/*":["src/assets/*"],
       "@data/*": ["src/data/*"],
       "@styles/*": ["src/styles/*"],
