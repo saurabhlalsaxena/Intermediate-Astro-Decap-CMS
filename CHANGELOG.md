@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.1.0
+
+### Major changes
+- The blog has received new components and some refactoring.
+
+- Baselayout now has typed Props and uses an optional preloadedImage prop consumed by: 1. the preload link and 2. the og tags for social sharing.
+For example, the cover image on a blog page passed to Baselayout will be used as the social image
+- Removed getOptimizedImage() from @utils and replaced with getImage() function directly in the page
 ## 2.0.0
 
 ### Major changes
